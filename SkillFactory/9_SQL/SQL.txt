@@ -1,0 +1,116 @@
+Для поиска по строкам (кортежам) используется ключевое слово WHERE, после которого перечисляются условия на кортежи данных. Where идёт после ключевого слова FROM. Например:
+
+
+    select book_name, author
+    from books 
+    where author = 'Charlaine Harris';
+
+
+Условия можно комбинировать друг с другом с помощью скобок, and и or. Например, если мы хотим получить только книги Charlaine Harris с рейтингом выше 3 или количеством оценок больше 1000, мы напишем:
+
+    select * 
+from books 
+where author = 'Charlaine Harris' 
+    and (book_average_rating > 3 or book_ratings_count > 1000);
+    
+    
+Кстати, отрицать можно любое условие. Например, чтобы вывести книги с рейтингом меньше 4, можно написать условие where book_average_rating < 4 или where not book_average_rating >= 4.
+
+Оператор BETWEEN
+Для облегчения написания условий существует оператор BETWEEN. Он указывает интервал, внутри которого должны быть элементы:
+book_average_rating between 3 and 4
+— это то же самое, что и
+book_average_rating >= 3 and book_average_rating <= 4
+
+    select book_id
+    from books
+    where book_id between 100 and 500 and book_average_rating between 3.2 and 3.4;
+    
+Для проверки на пустые строки существует специальный оператор NULL.
+
+С его помощью можно выводить непустые данные с помощью is not null, либо пустые с помощью is null. Например, мы хотим узнать, для каких книг не указан язык в нашей базе данных. Для этого зададим запрос:
+    
+    select * 
+    from books 
+    where language_code is null;
+
+
+    select * 
+    from books 
+    where language_code != 'eng';
+    
+    
+Выведите все столбцы для книг, у которых значения года публикации не лежат в промежутке от 1950 до 1965 года или у которых пустой год публикации (используйте операторы BETWEEN и IS NULL).
+
+    select * 
+    from books 
+    where publishing_year not between 1950 and 1965 or publishing_year is null;
+    
+
+Выведите все столбцы для книг, у которых (language_code = 'eng' или language_code = 'en-US' и больше 10000 оценок), либо у которых (жанр 'fiction' или год публикации 1957). Скобки в условии указывают порядок действий.
+    
+    select * 
+    from books 
+    where (language_code = 'eng' or language_code = 'en-US' and  book_ratings_count > 10000) or (genre = 'fiction' or publishing_year = 1957)
+
+
+
+Ключевое слово ORDER BY используется для сортировки данных. Оно указывается в самом конце запроса (если в запросе нет LIMIT или OFFSET, но про них позже). После ORDER BY через запятую передаются названия колонок, по которым должна проходить сортировка.
+
+Попробуйте в Metabase!
+
+    select book_id, book_name 
+    from books 
+    order by book_id;
+
+По умолчанию сортировка происходит по возрастанию asc, однако можно передать после названия колонки параметр desc, чтобы сортировка происходила по убыванию.
+
+    select author, book_name, publishing_year 
+    from books 
+    where publishing_year > 1980 
+    order by author desc, book_name;
+    
+    
+    
+Также в ORDER BY помимо параметра desc/asc можно передавать параметр NULLS FIRST / NULLS LAST, который показывает, в начало списка или в конец ставить пустые значения сортируемой колонки
+
+
+    select author, language_code, book_id
+    from books
+    where author = 'Ally Condie'
+    order by author, language_code asc nulls first;
+
+LIMIT и OFFSET
+Иногда нам нужны не все данные по каким-то условиям, а лишь их часть, например, когда нужно посмотреть, что и в каком формате содержится в таблице. С этим могут помочь ключевые слова LIMIT и OFFSET.
+
+Допустим, нам нужно вывести 5 строк таблицы. Нам поможет слово LIMIT.
+
+
+    select * 
+    from books 
+    limit 5;
+
+
+    select book_name, book_average_rating 
+    from books 
+    order by book_average_rating desc 
+    limit 3;
+ 
+    
+Если же нужно наоборот обрезать какие-то первые строки, тут поможет ключевое слово OFFSET:
+
+
+    select book_name, book_average_rating 
+    from books 
+    order by book_average_rating desc 
+    offset 3;
+
+
+Запрос выводит название и рейтинг книг с 4-го по 8-е место. Таким образом, LIMIT отсчитывает количество строк после указанной в OFFSET строки.
+
+    select book_name, book_average_rating 
+    from books 
+    order by book_average_rating desc 
+    offset 3 limit 5;
+    
+    
