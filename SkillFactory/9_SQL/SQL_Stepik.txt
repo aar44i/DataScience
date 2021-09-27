@@ -89,6 +89,60 @@ WHERE (price < 500 or price > 600) and price*amount >= 5000;
 
 
 Выбрать названия и количества тех книг, количество которых от 5 до 14 включительно.
+SELECT title, amount 
+FROM book
+WHERE amount BETWEEN 5 AND 14;
+Этот запрос можно реализовать по-другому, результат будет точно такой же.
+SELECT title, amount 
+FROM book
+WHERE amount >= 5 AND amount <=14;
+
+
+Выбрать названия и цены книг, написанных Булгаковым или Достоевским.
+SELECT title, price 
+FROM book
+WHERE author IN ('Булгаков М.А.', 'Достоевский Ф.М.');
+
+
+Вывести название и авторов тех книг, цены которых принадлежат интервалу от 540.50 до 800 (включая границы),  а количество или 2, или 3, или 5, или 7 .
+SELECT title, author 
+FROM book
+WHERE price BETWEEN 540.50  AND 800 and amount IN (2,3,5,7);
+
+
+
+Вывести название, автора и цены книг. Информацию  отсортировать по названиям книг в алфавитном порядке.
+SELECT title, author, price
+FROM book
+ORDER BY title;
+    Аналогичный результат получится при использовании запроса:
+SELECT title, author, price
+FROM book
+ORDER BY 1; 
+
+
+Вывести автора, название и количество книг, в отсортированном в алфавитном порядке по автору и по убыванию количества, для тех книг, цены которых меньше 750 рублей.
+SELECT author, title, amount AS Количество
+FROM book
+WHERE price < 750
+ORDER BY author, amount DESC;
+
+Можно использовать другие варианты записи запроса:
+SELECT author, title, amount AS Количество
+FROM book
+WHERE price < 750
+ORDER BY 1, 3 DESC;
+
+Вывести  автора и название  книг, количество которых принадлежит интервалу от 2 до 14 (включая границы). Информацию  отсортировать сначала по авторам (в обратном алфавитном порядке), а затем по названиям книг (по алфавиту).
+
+SELECT author, title
+FROM book
+WHERE amount BETWEEN 2 AND 14
+ORDER BY author DESC, title asc ;
+
+
+
+
 
 
 
